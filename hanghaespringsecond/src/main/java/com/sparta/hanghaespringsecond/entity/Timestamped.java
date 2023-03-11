@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Timestamped {  //생성 시간
 
-    @CreatedDate
+    @CreatedDate        //게시글을 쓸때 자동으로 들어간다
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @LastModifiedDate   //수정이 될때 알아서 시간을 넣어준다
     private LocalDateTime modifiedAt;
 }

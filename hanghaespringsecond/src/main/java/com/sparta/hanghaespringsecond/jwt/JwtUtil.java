@@ -1,6 +1,9 @@
 package com.sparta.hanghaespringsecond.jwt;
 
 
+import com.sparta.hanghaespringsecond.entity.User;
+import com.sparta.hanghaespringsecond.entity.UserRoleEnum;
+import com.sparta.hanghaespringsecond.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
@@ -22,9 +25,11 @@ import java.util.Date;
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String AUTHORIZATION_KEY = "auth";
-    private static final String BEARER_PREFIX = "Bearer ";
-    private static final long TOKEN_TIME = 60 * 60 * 1000L;
+    public static final String AUTHORIZATION_KEY = "auth";      //권환
+    private static final String BEARER_PREFIX = "Bearer ";      //토큰
+    private static final long TOKEN_TIME = 60 * 60 * 1000L;     //유효시간
+
+    public final UserRepository userRepository;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -47,16 +52,16 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username) {
+    public String createToken(String username, UserRoleEnum role) {    //UserRoleEnum role
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, null)
+                        .setSubject(username)       //username - username을 적어서 여기에 가져올 수 있는 거다
+                        .claim(AUTHORIZATION_KEY, role)     //권한 //role
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
-                        .signWith(key, signatureAlgorithm)
+                        .signWith(key, signatureAlgorithm)//알고리즘
                         .compact();
     }
 
@@ -80,6 +85,27 @@ public class JwtUtil {
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    // 토큰에서 사용자 가져오기
+    public User getUser(HttpServletRequest request) {
+        String token = resolveToken(request);
+        Claims claims;
+
+        if (token == null) throw new IllegalArgumentException("Token Error");
+
+        // 토큰이 있는 경우에만 가능
+        if (validateToken(token)) {
+            // 토큰에서 사용자 정보 가져오기
+            claims = getUserInfoFromToken(token);
+        } else {
+            throw new IllegalArgumentException("Token Error");
+        }
+
+        // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+        return userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+        );
     }
 
 }

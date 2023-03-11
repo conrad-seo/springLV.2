@@ -3,9 +3,12 @@ package com.sparta.hanghaespringsecond.service;
 import com.sparta.hanghaespringsecond.dto.LoginRequestDto;
 import com.sparta.hanghaespringsecond.dto.SignupRequestDto;
 import com.sparta.hanghaespringsecond.entity.User;
+import com.sparta.hanghaespringsecond.entity.UserRoleEnum;
 import com.sparta.hanghaespringsecond.jwt.JwtUtil;
 import com.sparta.hanghaespringsecond.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +60,7 @@ public class UserService {
             }
         }
 
-        User user = new User(username, password);
+        User user = new User(username, password, UserRoleEnum.USER);   //, signupRequestDto
         userRepository.save(user);
 
         System.out.println(user);
@@ -71,7 +74,7 @@ public class UserService {
 
 
     @Transactional()
-    public String login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -83,8 +86,11 @@ public class UserService {
         if(!user.getPassword().equals(password)){
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));      //role 넣기
         System.out.println("토큰 저장 성공");
-        return "hehhhhhhhhhhhhhh";
+        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
     }
 }
+//AUTHORIZATION_HEADER이거 이
+//

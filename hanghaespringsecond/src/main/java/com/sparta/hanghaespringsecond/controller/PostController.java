@@ -26,9 +26,7 @@ public class PostController {   //메모컨트롤러
 
 
     @PostMapping("/api/post")       //데이터베이스에 값 저장
-    public PostRequestDto createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request){//넘어오는 값이 객체 형식으로 넘오오기 때문에 @RequestBody를 사용
-        //POST방식이기 때문에 body가 존재하고 그 body안에 우리가 저장 해야 되는 것들이 넘어오기 때문에 @RequestBody를 사용
-        //MemoRequestDto 객체로 받는다 Dto객체를 만들지 않았기 때문에 MemoRequestDto를 개발을 하러 간다
+    public PostRequestDto createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request){
         return postService.createPost(requestDto, request);
     }
 
@@ -38,7 +36,7 @@ public class PostController {   //메모컨트롤러
     }
 
     @GetMapping("/api/post/{id}")   //선택한 게시글 조회
-    public Post choicePost(@PathVariable Long id) {
+    public PostResponseDto choicePost(@PathVariable Long id) {
         return postService.choicePost(id);
     }
 

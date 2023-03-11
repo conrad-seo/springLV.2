@@ -12,7 +12,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class Post extends Timestamped {
@@ -26,21 +25,18 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String username;
+    @ManyToOne
+    private User user;
 
-    @Column(nullable = false)
-    private Long userId;        //
-
-    public Post(PostRequestDto requestDto, Long userId) {
+    public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
-        this.username = requestDto.getUsername();
         this.content = requestDto.getContent();
-        this.userId = userId;
+        this.user = user;
     }
 
     public void update(PostResponseDto postResponseDto) {
         this.title = postResponseDto.getTitle();
         this.content = postResponseDto.getContent();
     }
+
 }
