@@ -17,9 +17,14 @@ public class Usercontroller {
     private final UserService userService;
 
     //회원가입
-    @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequestDto signupRequestDto) {
-        return userService.signup(signupRequestDto);
+    @PostMapping("/signup/user")
+    public String signupuser(@RequestBody SignupRequestDto signupRequestDto) {
+        return userService.signupuser(signupRequestDto);
+    }
+
+    @PostMapping("/signup/admin")
+    public String signupadmin(@RequestBody SignupRequestDto signupRequestDto) {
+        return userService.signupadmin(signupRequestDto);
     }
 
     //로그인

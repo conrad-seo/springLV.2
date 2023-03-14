@@ -1,8 +1,10 @@
 package com.sparta.hanghaespringsecond.jwt;
 
 
+import com.sparta.hanghaespringsecond.entity.Comment;
 import com.sparta.hanghaespringsecond.entity.User;
 import com.sparta.hanghaespringsecond.entity.UserRoleEnum;
+import com.sparta.hanghaespringsecond.repository.CommentRepository;
 import com.sparta.hanghaespringsecond.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -30,6 +32,7 @@ public class JwtUtil {
     private static final long TOKEN_TIME = 60 * 60 * 1000L;     //유효시간
 
     public final UserRepository userRepository;
+    public final CommentRepository commentRepository;
 
     @Value("${jwt.secret.key}")
     private String secretKey;

@@ -6,9 +6,10 @@ import com.sparta.hanghaespringsecond.dto.PostRequestDto;
 import com.sparta.hanghaespringsecond.dto.PostResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -26,7 +27,11 @@ public class Post extends Timestamped {
     private String content;
 
     @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
+
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+//    private List<Comment> commentList = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();

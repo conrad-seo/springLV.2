@@ -24,7 +24,7 @@ public class UserService {
 
 
     @Transactional
-    public String signup(SignupRequestDto signupRequestDto){
+    public String signupuser(SignupRequestDto signupRequestDto){
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
 
@@ -63,15 +63,51 @@ public class UserService {
         User user = new User(username, password, UserRoleEnum.USER);   //, signupRequestDto
         userRepository.save(user);
 
-        System.out.println(user);
         return "회원 가입 성공";
     }
 
-    public String login(SignupRequestDto signupRequestDto){
+    @Transactional
+    public String signupadmin(SignupRequestDto signupRequestDto){
+        String username = signupRequestDto.getUsername();
+        String password = signupRequestDto.getPassword();
 
-        return null;
+        if (username == null) {
+            return "username이 null입니다";
+        }
+
+        //아이디 중복인지 확인하는 코드
+        Optional<User> found = userRepository.findByUsername(username);
+        if (found.isPresent()) {
+            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+        }
+
+        //문자열 길이 체크
+        if(username.length()<4 || username.length()>10){
+            return "아이디 길이가 4이상 10이하여야 합니다";
+        }
+
+        //문자열을 문자 배열로 변환후 소문자랑 숫자인지 확인
+        for(char ch : username.toCharArray()){
+            if (!Character.isLowerCase(ch) && !Character.isDigit(ch)) {
+                return ("소문자와 숫자만 입력해 주시길 바랍니다");
+            }
+        }
+
+        //비밀번호 길이
+        if(password.length()<8 || password.length()>15){
+            return "비밀번호 길이는 8~15 이내로 작성해 주시길 바랍니다";
+        }
+        for(char ch : password.toCharArray()){
+            if (!Character.isLowerCase(ch) && !Character.isDigit(ch)&&!Character.isUpperCase(ch)) {
+                return ("대문자, 소문자그리고 숫자만 입력해 주시길 바랍니다");
+            }
+        }
+
+        User user = new User(username, password, UserRoleEnum.ADMIN);   //, signupRequestDto
+        userRepository.save(user);
+
+        return "회원 가입 성공";
     }
-
 
     @Transactional()
     public ResponseEntity<String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
