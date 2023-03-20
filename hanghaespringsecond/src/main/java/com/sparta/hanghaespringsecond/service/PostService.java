@@ -73,7 +73,7 @@ public class PostService {
     }
 
         private Post getPost(Long id) {
-            return postRepository.findById(id).orElseThrow(     //쓸데없이 착해
+            return postRepository.findById(id).orElseThrow(
                     () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
             );
         }

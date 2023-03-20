@@ -25,10 +25,10 @@ public class Comment {
     @JoinColumn(name = "postid", nullable = false)
     private Post post;
 
-    public Comment(CommentRequestDto commentRequestDto, User user, Post post){
+    public Comment(CommentRequestDto commentRequestDto, User user){
         this.postcomment = commentRequestDto.getPostcomment();
         this.user = user;
-        this.post = post;
+//        this.post = post;
     }
 
     public void updatecom(CommentRequestDto commentRequestDto){

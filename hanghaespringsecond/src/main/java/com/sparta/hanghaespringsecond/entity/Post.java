@@ -30,14 +30,17 @@ public class Post extends Timestamped {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
-//    private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+    private List<Comment> commentList = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.user = user;
     }
+//    public Post(List<Comment> commentList){
+//        commentList = getCommentList();
+//    }
 
     public void update(PostResponseDto postResponseDto) {
         this.title = postResponseDto.getTitle();

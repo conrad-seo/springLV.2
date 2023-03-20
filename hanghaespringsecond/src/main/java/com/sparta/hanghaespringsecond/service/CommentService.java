@@ -27,8 +27,16 @@ public class CommentService {
     public CommentResponseDto getcomment(Long id, CommentRequestDto commentRequestDto, HttpServletRequest request){
         User user = jwtUtil.getUser(request);
         Post post = getPost(id);
-        Comment comment = commentRepository.saveAndFlush(new Comment(commentRequestDto, user, post));
+        Comment comment = commentRepository.saveAndFlush(new Comment(commentRequestDto, user));
         return new CommentResponseDto(comment);
+        /*
+        public CommentResponseDto getcomment(Long id, CommentRequestDto commentRequestDto, HttpServletRequest request){
+        User user = jwtUtil.getUser(request);
+        Post post = getPost(id);
+        Comment comment = commentRepository.saveAndFlush(new Comment(commentRequestDto, user));
+        post.getCommentList().add(comment); //리스트를 저장해주는 함수
+        return new CommentResponseDto(comment);
+    }*/
     }
     @Transactional  //메소드 또는 클래스에 트랜잭션 기능을 부여하는 역할//이 어노테이션이 부여된 메소드나 클래스 내에서 일어나는 모든 DB 작업은 트랜잭션으로 묶이게 됨
     public CommentResponseDto updatecomment(Long id, Long comid, CommentRequestDto commentRequestDto, HttpServletRequest request) {
